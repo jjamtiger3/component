@@ -1,7 +1,14 @@
 .grid-container {
-    
-}
-
-.column-header {
-    display: inline-block;
-}
+    display: grid;
+    grid-template-columns:  80px 200px auto 140px 160px;
+    grid-template-rows: 20px 40px 20px 20px 20px 20px;
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .grid-item {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    text-align: center;
+  }
