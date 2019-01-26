@@ -1,30 +1,59 @@
 function Grid (target) {
-	this.target = target;
-	this._innerMethods._initialize();
+	this._innerMethods._initialize(target);
 }
 
 (function () {
 	var grid = this;
-	grid._innerProps = {
-		columns: null
-	};
+	var _innerProps = (function () {
+		return {
+			viewCanvas: null,
+			columns: null
+		}
+	})();
+	
 	grid._innerMethods = {
-		_initialize: function () {
-			for(var i in grid._innerProps) {
+		_initialize: function (target) {
+			var target = document.getElementById(target);
+			var canvas = document.createElement('canvas');
+			canvas.style.width = '100%';
+			canvas.style.height = '100%';
+			
+			if(!target) {
+				throw {
+					err: 'target Id must be exist!!'
+				}
+			}
+			target.append(canvas);
+			for(var i in _innerProps) {
+				// 속성값 getter, setter 생성
 				var getter = makeMethodName(i, true);
 				var setter = makeMethodName(i, false);
-				console.log(getter);
+				
+				// TODO 왜 중복할당이 되는지 알아볼것				
 				grid[getter] = function () {
-					return grid._innerProps[i];
-				}
+					return _innerProps[i];
+				};
 				grid[setter] = function (prop) {
-					grid._innerProps[i] = prop;
+					_innerProps[i] = prop;
 					return prop;
-				}
-			}			
+				};
+			}
+			grid.setViewCanvas(canvas);			
+			this._redraw ();
+		},
+		_clear: function () {
+			// TODO call clear method by grid event 
+			console.log('canvas cleared')
 		},
 		_redraw: function () {
-			console.log('redrawed');
+			this._clear ();
+			var canvas = grid.getViewCanvas();
+			var ctx = canvas.getContext("2d");
+			var columns = grid.getColumns();
+			if(!columns) {				
+				ctx.font = "30px Arial";
+				ctx.fillText("must set columns", 10, 50);
+			}
 		}			
 	}
 	function makeMethodName (strProp, isGetter) {
