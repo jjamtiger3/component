@@ -17,6 +17,7 @@ function Grid (target) {
 			var canvas = document.createElement('canvas');
 			canvas.style.width = '100%';
 			canvas.style.height = '100%';
+			canvas.style.border = '1px solid black'
 			
 			if(!target) {
 				throw {
@@ -26,17 +27,19 @@ function Grid (target) {
 			target.append(canvas);
 			for(var i in _innerProps) {
 				// 속성값 getter, setter 생성
-				var getter = makeMethodName(i, true);
-				var setter = makeMethodName(i, false);
-				
-				// TODO 왜 중복할당이 되는지 알아볼것				
-				grid[getter] = function () {
-					return _innerProps[i];
-				};
-				grid[setter] = function (prop) {
-					_innerProps[i] = prop;
-					return prop;
-				};
+				(function (prop) {
+					var getter = makeMethodName(prop, true);
+					var setter = makeMethodName(prop, false);
+					
+					// TODO 왜 중복할당이 되는지 알아볼것				
+					grid[getter] = function () {
+						return _innerProps[prop];
+					};
+					grid[setter] = function (_prop) {
+						_innerProps[prop] = _prop;
+						return _prop;
+					};
+				})(i);
 			}
 			grid.setViewCanvas(canvas);			
 			this._redraw ();
@@ -51,7 +54,7 @@ function Grid (target) {
 			var ctx = canvas.getContext("2d");
 			var columns = grid.getColumns();
 			if(!columns) {				
-				ctx.font = "30px Arial";
+				ctx.font = "15px Arial";				
 				ctx.fillText("must set columns", 10, 50);
 			}
 		}			
